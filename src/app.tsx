@@ -1,4 +1,4 @@
-import type {Settings as LayoutSettings} from '@ant-design/pro-layout';
+import type {MenuDataItem, Settings as LayoutSettings} from '@ant-design/pro-layout';
 import {PageLoading} from '@ant-design/pro-layout';
 import {notification} from 'antd';
 import type {RequestConfig, RunTimeLayoutConfig} from 'umi';
@@ -9,6 +9,7 @@ import type {ResponseError} from 'umi-request';
 import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
 
 import store from 'store';
+import {userMenu} from "@/services/ant-design-pro/rbac";
 
 const loginPath = '/user/login';
 
@@ -23,7 +24,9 @@ export const initialStateConfig = {
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
+  menuData?: MenuDataItem[],
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  fetchUserMenu?: () => Promise<MenuDataItem | undefined>
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -34,17 +37,30 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+  const fetchUserMenu=async ()=>{
+    try {
+      const response = await userMenu();
+      return response.data;
+    } catch (error) {
+      history.push(loginPath);
+    }
+    return undefined;
+  }
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+    const menuData=await fetchUserMenu();
+
     return {
       fetchUserInfo,
       currentUser,
+      menuData,
       settings: {},
     };
   }
   return {
     fetchUserInfo,
+    fetchUserMenu,
     settings: {},
   };
 }
@@ -55,7 +71,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
     waterMarkProps: {
-      content: initialState?.currentUser?.username,
+      content: 'rock admin',
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
@@ -64,6 +80,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
+    },
+    iconfontUrl:"//at.alicdn.com/t/font_2468787_wyabmpil2mg.js",
+    menuDataRender:(menuData)=>{
+      return initialState!.menuData||menuData
     },
     menuHeaderRender: undefined,
     // 自定义 403 页面

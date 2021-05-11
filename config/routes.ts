@@ -17,14 +17,22 @@
   },
   {
     path: '/rbac',
-    name: '权限管理',
-    icon: 'crown',
     routes: [
       {
         path: '/rbac/role/index',
-        name: '角色管理',
-        icon: 'smile',
         component: './rbac/role/index',
+      },
+      {
+        path: '/rbac/role/permission/index',
+        component: './rbac/role/permission/index',
+      },
+      {
+        path: '/rbac/permission/index',
+        component: './rbac/permission/index',
+      },
+      {
+        path: '/rbac/user/index',
+        component: './rbac/user/index',
       },
     ],
   },

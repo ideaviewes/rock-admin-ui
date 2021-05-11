@@ -1,4 +1,5 @@
 import { request } from 'umi';
+import type {MenuDataItem} from "@ant-design/pro-layout";
 
 export async function roleIndex(
   params: {
@@ -46,3 +47,43 @@ export async function removeRole(id: number|undefined) {
   });
 }
 
+export async function permissionIndex(payload: API.PageParams){
+  return request<API.Response<API.PermissionListItem[]>>(`/api/rbac/permission/index`,{
+    method:"GET",
+    params:{
+      ...payload
+    }
+  });
+}
+export async function addPermission(payload: API.PermissionListItem){
+  return request<API.Response<any>>(`/api/rbac/permission/create`,{
+    method:"POST",
+    data:{
+      ...payload
+    }
+  });
+}
+
+export async function updatePermission(payload: API.PermissionListItem){
+  return request<API.Response<any>>(`/api/rbac/permission/update`,{
+    method:"POST",
+    data:{
+      ...payload
+    }
+  });
+}
+
+export async function removePermission(id: number|undefined) {
+  return request<API.Response<any>>('/api/rbac/permission/delete', {
+    method: 'POST',
+    params:{
+      id
+    }
+  });
+}
+
+export async function userMenu(){
+  return request<API.Response<MenuDataItem[]>>(`/api/rbac/user/menu`,{
+    method:"GET"
+  });
+}

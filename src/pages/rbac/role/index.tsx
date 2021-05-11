@@ -5,19 +5,21 @@ import {Button, message, Modal, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {addRole, removeRole, roleIndex, updateRole} from "@/services/ant-design-pro/rbac";
 import {ModalForm, ProFormText, ProFormTextArea} from "@ant-design/pro-form";
+import {history} from "umi";
 
 
 const RoleList: React.FC=()=>{
   const actionRef = useRef<ActionType>();
   const [createModalVisible,handleModalVisible]=useState<boolean>(false);
   const [current,handleCurrent]=useState<Partial<API.RoleListItem>>({});
-
   const [updateModalVisible,handleUpdateModalVisible]=useState<boolean>(false);
+
   const roleDelete=(id: number|undefined)=>{
     Modal.confirm({
       title:"删除角色",
       content:"您确定要删除该角色吗？删除后不能恢复！",
       centered:true,
+      okType:"danger",
       onOk:async ()=>{
         const response = await removeRole(id);
         const {code,msg}=response;
@@ -61,6 +63,9 @@ const RoleList: React.FC=()=>{
             handleCurrent(record);
             handleUpdateModalVisible(true);
           }}>编辑</Button>
+          <Button type={"dashed"} size={"small"} onClick={()=>{
+            history.push(`/rbac/role/permission/index`);
+          }}>权限</Button>
           <Button type={"primary"} size={"small"} danger={true} onClick={async ()=>{
             roleDelete(record.id);
           }}>删除</Button>
