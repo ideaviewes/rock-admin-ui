@@ -32,7 +32,7 @@ const goto = () => {
     const { redirect } = query as {
       redirect: string;
     };
-    history.push(redirect || '/');
+    window.location.href=redirect || '/';
   }, 10);
 };
 

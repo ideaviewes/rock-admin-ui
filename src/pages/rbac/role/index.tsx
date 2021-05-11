@@ -64,7 +64,7 @@ const RoleList: React.FC=()=>{
             handleUpdateModalVisible(true);
           }}>编辑</Button>
           <Button type={"dashed"} size={"small"} onClick={()=>{
-            history.push(`/rbac/role/permission/index`);
+            history.push(`/rbac/role/permission/index`,{role:record});
           }}>权限</Button>
           <Button type={"primary"} size={"small"} danger={true} onClick={async ()=>{
             roleDelete(record.id);

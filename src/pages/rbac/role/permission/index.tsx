@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {Link} from 'umi';
+import React, {useRef} from 'react';
+import {Link,useHistory} from 'umi';
 import {PageContainer} from "@ant-design/pro-layout";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import IconFont from "@/components/Font/Iconfont";
@@ -8,6 +8,8 @@ import {Table} from "antd";
 
 const RolePermissionIndex: React.FC = () => {
   const actionRef = useRef<ActionType>();
+  const history=useHistory();
+  const {role}=history.location.state;
   const columns: ProColumns<API.PermissionListItem>[] = [
     {
       title: '名称',
@@ -43,7 +45,7 @@ const RolePermissionIndex: React.FC = () => {
   return <PageContainer
     header={
       {
-        title: "权限分配",
+        title: `${role.name}权限分配`,
         breadcrumb: {
           routes: [
             {

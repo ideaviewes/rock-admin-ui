@@ -50,7 +50,6 @@ export async function getInitialState(): Promise<{
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     const menuData=await fetchUserMenu();
-
     return {
       fetchUserInfo,
       currentUser,
