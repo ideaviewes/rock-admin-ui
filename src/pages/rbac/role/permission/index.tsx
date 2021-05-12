@@ -1,15 +1,28 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Link,useHistory} from 'umi';
 import {PageContainer} from "@ant-design/pro-layout";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import IconFont from "@/components/Font/Iconfont";
 import {permissionIndex} from "@/services/ant-design-pro/rbac";
 import {Table} from "antd";
+import {getPermissionOpenKeys} from "@/utils/utils";
 
 const RolePermissionIndex: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const history=useHistory();
-  const {role}=history.location.state;
+  const {role}: API.RoleListItem = history.location.state;
+
+  const [expandedRowKeys,setExpandedRowKeys]=useState<string[]>([]);
+
+
+  const handleExpand = (expanded: boolean, key: string) => {
+    if (!expanded && expandedRowKeys.includes(key)) {
+      expandedRowKeys.forEach((t, i) => {
+        if (t === key) expandedRowKeys.splice(i, 1);
+      });
+    } else if (!expandedRowKeys.includes(key)) expandedRowKeys.push(key);
+    setExpandedRowKeys(expandedRowKeys)
+  };
   const columns: ProColumns<API.PermissionListItem>[] = [
     {
       title: '名称',
