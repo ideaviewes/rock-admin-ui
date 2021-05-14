@@ -1,15 +1,43 @@
-import React, {useRef} from 'react';
-import {Link,useHistory} from 'umi';
-import {PageContainer} from "@ant-design/pro-layout";
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import IconFont from "@/components/Font/Iconfont";
-import {permissionIndex} from "@/services/ant-design-pro/rbac";
-import {Table} from "antd";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useHistory } from 'umi';
+import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import IconFont from '@/components/Font/Iconfont';
+import {
+  authRolePermission,
+  permissionIndex,
+  rolePermissionIds,
+} from '@/services/ant-design-pro/rbac';
+import { Button, message } from 'antd';
+
+const authPermissionHandler = async (roleId: number, selectedRows: API.PermissionListItem[]) => {
+  if (!selectedRows) return;
+  const permissionIds = selectedRows.map((item) => item.id);
+  const payload = { role_id: roleId, permission_ids: permissionIds };
+  const hide = message.loading('正在分配权限...');
+  const response = await authRolePermission(payload);
+  hide();
+  const { code, msg } = response;
+  if (code === 200) {
+    message.success(msg);
+    return;
+  }
+  message.error(msg);
+};
 
 const RolePermissionIndex: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const history=useHistory();
-  const {role}=history.location.state;
+  const history = useHistory();
+  const { role } = history.location.state;
+  const [selectedRowsState, setSelectedRows] = useState<API.PermissionListItem[]>([]);
+  const [selectedRowKeysState, setSelectedRowKeys] = useState<number[]>([]);
+  const getRolePermissionIds = async (roleId: number) => {
+    const response = await rolePermissionIds(roleId);
+    setSelectedRowKeys(response.data || []);
+  };
+  useEffect(() => {
+    getRolePermissionIds(role.id);
+  }, []);
   const columns: ProColumns<API.PermissionListItem>[] = [
     {
       title: '名称',
@@ -18,47 +46,49 @@ const RolePermissionIndex: React.FC = () => {
     {
       title: '网址',
       dataIndex: 'url',
-      search: false
+      search: false,
     },
     {
-      title: " 图标",
-      dataIndex: "icon",
-      search:false,
+      title: ' 图标',
+      dataIndex: 'icon',
+      search: false,
       render: (_, record) => {
-        return <IconFont type={record!.icon}/>
-      }
+        return <IconFont type={record!.icon} />;
+      },
     },
     {
-      title:"导航菜单",
-      dataIndex:"hide_in_menu",
-      valueEnum:{
-        1:{text:"隐藏",status:"Success"},
-        2:{text:"显示",status:"Processing"},
-      }
+      title: '导航菜单',
+      dataIndex: 'hide_in_menu',
+      valueEnum: {
+        1: { text: '隐藏', status: 'Success' },
+        2: { text: '显示', status: 'Processing' },
+      },
     },
     {
       title: '优先级',
       dataIndex: 'priority',
-      search: false
+      search: false,
     },
   ];
-  return <PageContainer
-    header={
-      {
+
+  return (
+    <PageContainer
+      header={{
         title: `${role.name}权限分配`,
         breadcrumb: {
           routes: [
             {
-              path: "/rbac",
-              breadcrumbName: "权限管理"
-            }, {
-              path: "/rbac/role/index",
-              breadcrumbName: "角色管理"
+              path: '/rbac',
+              breadcrumbName: '权限管理',
             },
             {
-              path:"",
-              breadcrumbName: "权限分配"
-            }
+              path: '/rbac/role/index',
+              breadcrumbName: '角色管理',
+            },
+            {
+              path: '',
+              breadcrumbName: '权限分配',
+            },
           ],
           itemRender: (route, params, routes) => {
             const last = routes.indexOf(route) === routes.length - 1;
@@ -67,30 +97,60 @@ const RolePermissionIndex: React.FC = () => {
             ) : (
               <Link to={route.path}>{route.breadcrumbName}</Link>
             );
+          },
+        },
+      }}
+    >
+      <ProTable<API.PermissionListItem>
+        headerTitle={'分配权限'}
+        actionRef={actionRef}
+        rowKey={'id'}
+        rowSelection={{
+          selectedRowKeys: selectedRowKeysState,
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+          },
+          onSelect: (record, selected) => {
+            let result = [];
+            if (selected) {
+              result = [...selectedRowKeysState, record.id];
+            } else {
+              result = selectedRowKeysState.filter((item) => item !== record.id);
+            }
+            setSelectedRowKeys(result);
+          },
+        }}
+        request={async (params) => {
+          const response = await permissionIndex(params);
+          return {
+            success: response.code === 200,
+            data: response.data,
+          };
+        }}
+        search={false}
+        columns={columns}
+        pagination={false}
+      />
+      {selectedRowsState.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项权限
+            </div>
           }
-        }
-      }
-    }
-  >
-    <ProTable<API.PermissionListItem>
-      headerTitle={"分配权限"}
-      actionRef={actionRef}
-      rowKey={"id"}
-      rowSelection={{
-        selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
-      }}
-      request={async (params) => {
-        const response = await permissionIndex(params);
-        return {
-          success: response.code === 200,
-          data: response.data
-        }
-      }}
-      search={false}
-      columns={columns}
-      pagination={false}
-    />
-  </PageContainer>
-}
+        >
+          <Button
+            type="primary"
+            onClick={async () => {
+              await authPermissionHandler(role.id, selectedRowsState);
+            }}
+          >
+            提交
+          </Button>
+        </FooterToolbar>
+      )}
+    </PageContainer>
+  );
+};
 
 export default RolePermissionIndex;

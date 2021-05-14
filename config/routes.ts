@@ -38,7 +38,7 @@
   },
   {
     path: '/',
-    redirect: '/rbac/role/index',
+    redirect: '/rbac/user/index',
   },
   {
     component: './404',
