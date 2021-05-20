@@ -12,7 +12,7 @@ import { Button, message } from 'antd';
 
 const authPermissionHandler = async (roleId: number, selectedRows: API.PermissionListItem[]) => {
   if (!selectedRows) return;
-  const permissionIds = selectedRows.map((item) => item.id);
+  const permissionIds = selectedRows.map((item) => item.id!);
   const payload = { role_id: roleId, permission_ids: permissionIds };
   const hide = message.loading('正在分配权限...');
   const response = await authRolePermission(payload);
@@ -112,10 +112,18 @@ const RolePermissionIndex: React.FC = () => {
           },
           onSelect: (record, selected) => {
             let result = [];
+            let childrenIds: number[]=[];
             if (selected) {
-              result = [...selectedRowKeysState, record.id];
+              if(record.children){
+                childrenIds=record.children.map(item=>item.id!);
+              }
+              result = [...selectedRowKeysState, record.id!,...childrenIds];
             } else {
-              result = selectedRowKeysState.filter((item) => item !== record.id);
+              if(record.children){
+                childrenIds=record.children.map(item=>item.id!);
+              }
+              result = selectedRowKeysState.filter((item) => item !== record.id!);
+              result=[...result].filter(x=>[...childrenIds].every(y=>y!==x));
             }
             setSelectedRowKeys(result);
           },

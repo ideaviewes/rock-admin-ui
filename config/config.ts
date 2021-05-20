@@ -37,6 +37,7 @@ export default defineConfig({
   // https://umijs.org/plugins/plugin-esbuild
   esbuild: {},
   title: false,
+  webpack5:{},
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
