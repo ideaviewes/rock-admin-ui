@@ -7,17 +7,19 @@ import {
   removePermission,
   updatePermission,
 } from '@/services/ant-design-pro/rbac';
-import { Button, Form, Space, Modal, message } from 'antd';
+import { Button, Form, message, Modal, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import IconFont from '@/components/Font/Iconfont';
 import { ModalForm, ProFormRadio, ProFormText } from '@ant-design/pro-form';
 import PermissionTreeSelect from '@/components/Permission/tree';
+import { Access, useAccess } from '@@/plugin-access/access';
 
 const PermissionList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>();
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>();
   const [current, setCurrent] = useState<Partial<API.PermissionListItem>>({});
+  const access: API.UserAccessItem = useAccess();
   const permissionDelete = (id: number | undefined) => {
     Modal.confirm({
       title: '删除权限',
@@ -78,26 +80,30 @@ const PermissionList: React.FC = () => {
       render: (_, record) => {
         return (
           <Space>
-            <Button
-              type={'primary'}
-              size={'small'}
-              onClick={() => {
-                handleUpdateModalVisible(true);
-                setCurrent(record);
-              }}
-            >
-              编辑
-            </Button>
-            <Button
-              type={'primary'}
-              size={'small'}
-              danger={true}
-              onClick={async () => {
-                permissionDelete(record.id);
-              }}
-            >
-              删除
-            </Button>
+            <Access accessible={access.rbacPermissionCreate!}>
+              <Button
+                type={'primary'}
+                size={'small'}
+                onClick={() => {
+                  handleUpdateModalVisible(true);
+                  setCurrent(record);
+                }}
+              >
+                编辑
+              </Button>
+            </Access>
+            <Access accessible={access.rbacPermissionDelete!}>
+              <Button
+                type={'primary'}
+                size={'small'}
+                danger={true}
+                onClick={async () => {
+                  permissionDelete(record.id);
+                }}
+              >
+                删除
+              </Button>
+            </Access>
           </Space>
         );
       },
@@ -120,15 +126,17 @@ const PermissionList: React.FC = () => {
         columns={columns}
         pagination={false}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleCreateModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
+          <Access accessible={access.rbacPermissionCreate!}>
+            <Button
+              type="primary"
+              key="primary"
+              onClick={() => {
+                handleCreateModalVisible(true);
+              }}
+            >
+              <PlusOutlined /> 新建
+            </Button>
+          </Access>,
         ]}
       />
       {createModalVisible && (
@@ -219,7 +227,7 @@ const PermissionList: React.FC = () => {
             rules={[{ required: true, message: '请填写权限名称' }]}
             name={'name'}
           />
-          <Form.Item label={'父级权限'} name={'parent_id'} initialValue={current.parentId}>
+          <Form.Item label={'父级权限'} name={'parent_id'} initialValue={current.parent_id}>
             <PermissionTreeSelect />
           </Form.Item>
           <ProFormText

@@ -7,12 +7,14 @@ import { addUser, deleteUser, queryUser, statusUser, updateUser } from '@/pages/
 import { PlusOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { roleIndex } from '@/services/ant-design-pro/rbac';
+import { Access, useAccess } from '@@/plugin-access/access';
 
 const RbacUserList: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [row, handleRow] = useState<Partial<TableListItem>>({});
+  const access: API.UserAccessItem = useAccess();
   const handleDeleteUser = (id: number) => {
     Modal.confirm({
       title: '删除用户',
@@ -73,23 +75,30 @@ const RbacUserList: React.FC<{}> = () => {
           status: 'Processing',
         },
       },
-      render: (_, record) => {
+      render: (dom, record) => {
         return (
-          <Switch
-            defaultChecked={record.status === 1}
-            checkedChildren={'正常'}
-            unCheckedChildren={'冻结'}
-            onChange={async (checked) => {
-              const status = checked ? 1 : 2;
-              const response = await statusUser({ id: record.id!, status });
-              const { code, msg } = response;
-              if (code === 200) {
-                message.success(msg);
-                return;
-              }
-              message.error(msg);
+          <Access
+            accessible={access.rbacUserStatus!}
+            fallback={() => {
+              return dom;
             }}
-          />
+          >
+            <Switch
+              defaultChecked={record.status === 1}
+              checkedChildren={'正常'}
+              unCheckedChildren={'冻结'}
+              onChange={async (checked) => {
+                const status = checked ? 1 : 2;
+                const response = await statusUser({ id: record.id!, status });
+                const { code, msg } = response;
+                if (code === 200) {
+                  message.success(msg);
+                  return;
+                }
+                message.error(msg);
+              }}
+            />
+          </Access>
         );
       },
     },
@@ -106,26 +115,30 @@ const RbacUserList: React.FC<{}> = () => {
       render: (_, record) => {
         return (
           <Space>
-            <Button
-              type={'primary'}
-              size={'small'}
-              onClick={() => {
-                handleRow(record);
-                handleUpdateModalVisible(true);
-              }}
-            >
-              编辑
-            </Button>
-            <Button
-              type={'primary'}
-              size={'small'}
-              danger={true}
-              onClick={async () => {
-                await handleDeleteUser(record.id!);
-              }}
-            >
-              删除
-            </Button>
+            <Access accessible={access.rbacUserUpdate!}>
+              <Button
+                type={'primary'}
+                size={'small'}
+                onClick={() => {
+                  handleRow(record);
+                  handleUpdateModalVisible(true);
+                }}
+              >
+                编辑
+              </Button>
+            </Access>
+            <Access accessible={access.rbacUserDelete!}>
+              <Button
+                type={'primary'}
+                size={'small'}
+                danger={true}
+                onClick={async () => {
+                  await handleDeleteUser(record.id!);
+                }}
+              >
+                删除
+              </Button>
+            </Access>
           </Space>
         );
       },

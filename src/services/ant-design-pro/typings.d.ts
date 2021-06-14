@@ -1,23 +1,24 @@
 declare namespace API {
   interface Response<T> {
-    code: number,
-    msg: string,
-    data?: T
+    code: number;
+    msg: string;
+    data?: T;
   }
   type CurrentUser = {
-    id: number,
+    id: number;
     username?: string;
     avatar?: string;
-    mobile: string
+    mobile: string;
+    access?: UserAccessItem;
   };
-  type LoginParams={
-    username?: string,
-    password?: string
-  }
+  type LoginParams = {
+    username?: string;
+    password?: string;
+  };
   type LoginResult = {
     code?: number;
     msg?: string;
-    data?: string
+    data?: string;
   };
 
   type PageParams = {
@@ -35,21 +36,41 @@ declare namespace API {
     code?: string;
     remark?: string;
   };
-  type PermissionListItem={
-    id?: number,
-    parentId?: number,
-    name?: string,
-    icon: string,
-    url?: string,
-    priority?: number,
-    hide_in_menu?: number,
-    hide_children_in_menu?: number,
-    children?: PermissionListItem[]
-  }
-  type PermissionTreeItem={
-    value?: number,
-    title?: string,
-    label?: string,
-    children?: PermissionTreeItem[]
-  }
+  type PermissionListItem = {
+    id?: number;
+    parentId?: number;
+    name?: string;
+    icon: string;
+    url?: string;
+    priority?: number;
+    hide_in_menu?: number;
+    hide_children_in_menu?: number;
+    parent_id?: number;
+    children?: PermissionListItem[];
+  };
+  type PermissionTreeItem = {
+    value?: number;
+    title?: string;
+    label?: string;
+    children?: PermissionTreeItem[];
+  };
+
+  type UserAccessItem = {
+    rbacRoleCreate?: boolean;
+    rbacRoleIndex?: boolean;
+    rbacUserDelete?: boolean;
+    rbacPermissionCreate?: boolean;
+    rbacUserUpdate?: boolean;
+    rbacRolePermissionIndex?: boolean;
+    rbacUserIndex?: boolean;
+    rbacUserStatus?: boolean;
+    rbacRoleUpdate?: boolean;
+    rbacUserCreate?: boolean;
+    rbacPermissionUpdate?: boolean;
+    rbacPermissionDelete?: boolean;
+    rbac?: boolean;
+    rbacPermissionIndex?: boolean;
+    rbacRoleDelete?: boolean;
+    rbacRoleAuthPermission?: boolean;
+  };
 }

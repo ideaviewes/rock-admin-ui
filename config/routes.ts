@@ -16,27 +16,33 @@
     ],
   },
   {
+    access: 'Rbac',
     path: '/rbac',
     routes: [
       {
+        access: 'rbacRoleIndex',
         path: '/rbac/role/index',
         component: './rbac/role/index',
       },
       {
+        access: 'rbacRolePermissionIndex',
         path: '/rbac/role/permission/index',
         component: './rbac/role/permission/index',
       },
       {
+        access: 'rbacPermissionIndex',
         path: '/rbac/permission/index',
         component: './rbac/permission/index',
       },
       {
+        access: 'rbacUserIndex',
         path: '/rbac/user/index',
         component: './rbac/user/index',
       },
     ],
   },
   {
+    access: 'index',
     path: '/',
     redirect: '/rbac/user/index',
   },
