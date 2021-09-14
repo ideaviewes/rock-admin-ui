@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import {
   addPermission,
   permissionIndex,
@@ -9,7 +10,6 @@ import {
 } from '@/services/ant-design-pro/rbac';
 import { Button, Form, message, Modal, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import IconFont from '@/components/Font/Iconfont';
 import { ModalForm, ProFormRadio, ProFormText } from '@ant-design/pro-form';
 import PermissionTreeSelect from '@/components/Permission/tree';
 import { Access, useAccess } from '@@/plugin-access/access';
@@ -53,14 +53,6 @@ const PermissionList: React.FC = () => {
       title: '网址',
       dataIndex: 'url',
       search: false,
-    },
-    {
-      title: ' 图标',
-      dataIndex: 'icon',
-      search: false,
-      render: (_, record) => {
-        return <IconFont type={record!.icon} />;
-      },
     },
     {
       title: '导航菜单',

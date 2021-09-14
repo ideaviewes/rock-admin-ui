@@ -42,6 +42,7 @@ export default defineConfig({
   esbuild: {},
   title: false,
   webpack5: {},
+  mfsu: {},
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {

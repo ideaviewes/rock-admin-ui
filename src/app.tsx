@@ -1,17 +1,22 @@
-import type {MenuDataItem, Settings as LayoutSettings} from '@ant-design/pro-layout';
-import {PageLoading} from '@ant-design/pro-layout';
-import {notification} from 'antd';
-import type {RequestConfig, RunTimeLayoutConfig} from 'umi';
-import {history} from 'umi';
+import type { MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { PageLoading } from '@ant-design/pro-layout';
+import { notification } from 'antd';
+import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
+import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import type {ResponseError} from 'umi-request';
-import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
+import type { ResponseError } from 'umi-request';
+import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 
 import store from 'store';
-import {userMenu} from "@/services/ant-design-pro/rbac";
+import { userMenu } from '@/services/ant-design-pro/rbac';
+import { ApartmentOutlined } from '@ant-design/icons';
 
 const loginPath = '/user/login';
+
+const IconMap = {
+  rbac: <ApartmentOutlined />,
+};
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -24,9 +29,9 @@ export const initialStateConfig = {
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
-  menuData?: MenuDataItem[],
+  menuData?: MenuDataItem[];
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
-  fetchUserMenu?: () => Promise<MenuDataItem | undefined>
+  fetchUserMenu?: () => Promise<MenuDataItem | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -37,19 +42,25 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
-  const fetchUserMenu=async ()=>{
+  const fetchUserMenu = async () => {
     try {
       const response = await userMenu();
-      return response.data;
+      const data = response.data || [];
+      return data!.map(({ icon, ...item }) => {
+        return {
+          ...item,
+          icon: icon && IconMap[icon as string],
+        };
+      });
     } catch (error) {
       history.push(loginPath);
     }
     return undefined;
-  }
+  };
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
-    const menuData=await fetchUserMenu();
+    const menuData = await fetchUserMenu();
     return {
       fetchUserInfo,
       currentUser,
@@ -80,9 +91,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         history.push(loginPath);
       }
     },
-    iconfontUrl:"//at.alicdn.com/t/font_2468787_wyabmpil2mg.js",
-    menuDataRender:(menuData)=>{
-      return initialState!.menuData||menuData
+    menuDataRender: (menuData) => {
+      return initialState!.menuData || menuData;
     },
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -137,7 +147,7 @@ const errorHandler = (error: ResponseError) => {
 // https://umijs.org/zh-CN/plugins/plugin-request
 export const request: RequestConfig = {
   errorHandler,
-  headers:{
-    "Authorization":store.get("token")
-  }
+  headers: {
+    Authorization: store.get('token'),
+  },
 };

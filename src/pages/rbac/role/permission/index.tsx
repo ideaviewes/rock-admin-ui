@@ -10,9 +10,8 @@ import {
 } from '@/services/ant-design-pro/rbac';
 import { Button, message } from 'antd';
 
-const authPermissionHandler = async (roleId: number, selectedRows: API.PermissionListItem[]) => {
-  if (!selectedRows) return;
-  const permissionIds = selectedRows.map((item) => item.id!);
+const authPermissionHandler = async (roleId: number, permissionIds: number[]) => {
+  if (!permissionIds) return;
   const payload = { role_id: roleId, permission_ids: permissionIds };
   const hide = message.loading('正在分配权限...');
   const response = await authRolePermission(payload);
@@ -28,8 +27,8 @@ const authPermissionHandler = async (roleId: number, selectedRows: API.Permissio
 const RolePermissionIndex: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const history = useHistory();
+  // @ts-ignore
   const { role } = history.location.state;
-  const [selectedRowsState, setSelectedRows] = useState<API.PermissionListItem[]>([]);
   const [selectedRowKeysState, setSelectedRowKeys] = useState<number[]>([]);
   const getRolePermissionIds = async (roleId: number) => {
     const response = await rolePermissionIds(roleId);
@@ -107,23 +106,20 @@ const RolePermissionIndex: React.FC = () => {
         rowKey={'id'}
         rowSelection={{
           selectedRowKeys: selectedRowKeysState,
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
           onSelect: (record, selected) => {
             let result = [];
-            let childrenIds: number[]=[];
+            let childrenIds: number[] = [];
             if (selected) {
-              if(record.children){
-                childrenIds=record.children.map(item=>item.id!);
+              if (record.children) {
+                childrenIds = record.children.map((item) => item.id!);
               }
-              result = [...selectedRowKeysState, record.id!,...childrenIds];
+              result = [...selectedRowKeysState, record.id!, ...childrenIds];
             } else {
-              if(record.children){
-                childrenIds=record.children.map(item=>item.id!);
+              if (record.children) {
+                childrenIds = record.children.map((item) => item.id!);
               }
               result = selectedRowKeysState.filter((item) => item !== record.id!);
-              result=[...result].filter(x=>[...childrenIds].every(y=>y!==x));
+              result = [...result].filter((x) => [...childrenIds].every((y) => y !== x));
             }
             setSelectedRowKeys(result);
           },
@@ -139,18 +135,18 @@ const RolePermissionIndex: React.FC = () => {
         columns={columns}
         pagination={false}
       />
-      {selectedRowsState.length > 0 && (
+      {selectedRowKeysState.length > 0 && (
         <FooterToolbar
           extra={
             <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项权限
+              已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeysState.length}</a> 项权限
             </div>
           }
         >
           <Button
             type="primary"
             onClick={async () => {
-              await authPermissionHandler(role.id, selectedRowsState);
+              await authPermissionHandler(role.id, selectedRowKeysState);
             }}
           >
             提交
