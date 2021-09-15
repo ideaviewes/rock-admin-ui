@@ -1,13 +1,12 @@
-import {LockOutlined, MobileOutlined, UserOutlined, WechatOutlined,} from '@ant-design/icons';
-import {Alert, message, Space, Tabs} from 'antd';
-import React, {useState} from 'react';
-import ProForm, {ProFormCaptcha, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
-import {history, Link, useModel} from 'umi';
+import { LockOutlined, MobileOutlined, UserOutlined, WechatOutlined } from '@ant-design/icons';
+import { Alert, message, Space, Tabs } from 'antd';
+import React, { useState } from 'react';
+import ProForm, { ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
+import { history, Link, useModel } from 'umi';
 import Footer from '@/components/Footer';
-import {getFakeCaptcha, loginByAccount} from '@/services/ant-design-pro/login';
+import { getFakeCaptcha, loginByAccount } from './service';
 
 import store from 'store';
-
 
 import styles from './index.less';
 
@@ -23,16 +22,11 @@ const LoginMessage: React.FC<{
     showIcon
   />
 );
-/** 此方法会跳转到 redirect 参数所在的位置 */
 
-const goto = () => {
+const goto = (url: string) => {
   if (!history) return;
   setTimeout(() => {
-    const { query } = history.location;
-    const { redirect } = query as {
-      redirect: string;
-    };
-    window.location.href=redirect || '/';
+    window.location.href = url;
   }, 10);
 };
 
@@ -58,9 +52,9 @@ const Login: React.FC = () => {
       const response = await loginByAccount({ ...values });
       if (response.code === 200) {
         message.success('登录成功！');
-        store.set("token",response.data);
+        store.set('token', response.data!.token);
         await fetchUserInfo();
-        goto();
+        goto(response.data!.url!);
         return;
       } // 如果失败去设置用户错误信息
       setUserLoginState(response);
@@ -72,7 +66,6 @@ const Login: React.FC = () => {
   };
 
   const { code } = userLoginState;
-
 
   return (
     <div className={styles.container}>
@@ -110,20 +103,12 @@ const Login: React.FC = () => {
             }}
           >
             <Tabs activeKey={type} onChange={setType}>
-              <Tabs.TabPane
-                key="account"
-                tab='账户密码登录'
-              />
-              <Tabs.TabPane
-                key="mobile"
-                tab='手机号登录'
-              />
+              <Tabs.TabPane key="account" tab="账户密码登录" />
+              <Tabs.TabPane key="mobile" tab="手机号登录" />
             </Tabs>
 
             {code && code !== 200 && type === 'account' && (
-              <LoginMessage
-                content='账户或密码错误'
-              />
+              <LoginMessage content="账户或密码错误" />
             )}
             {type === 'account' && (
               <>
@@ -133,7 +118,7 @@ const Login: React.FC = () => {
                     size: 'large',
                     prefix: <UserOutlined className={styles.prefixIcon} />,
                   }}
-                  placeholder='请输入用户名'
+                  placeholder="请输入用户名"
                   rules={[
                     {
                       required: true,
@@ -147,7 +132,7 @@ const Login: React.FC = () => {
                     size: 'large',
                     prefix: <LockOutlined className={styles.prefixIcon} />,
                   }}
-                  placeholder='请输入登录密码'
+                  placeholder="请输入登录密码"
                   rules={[
                     {
                       required: true,
@@ -158,7 +143,7 @@ const Login: React.FC = () => {
               </>
             )}
 
-            {code&& code!== 200 && type === 'mobile' && <LoginMessage content="验证码错误" />}
+            {code && code !== 200 && type === 'mobile' && <LoginMessage content="验证码错误" />}
             {type === 'mobile' && (
               <>
                 <ProFormText
@@ -167,7 +152,7 @@ const Login: React.FC = () => {
                     prefix: <MobileOutlined className={styles.prefixIcon} />,
                   }}
                   name="mobile"
-                  placeholder='手机号'
+                  placeholder="手机号"
                   rules={[
                     {
                       required: true,

@@ -6,10 +6,10 @@ import type { TableListItem } from '@/pages/rbac/user/data';
 import { addUser, deleteUser, queryUser, statusUser, updateUser } from '@/pages/rbac/user/service';
 import { PlusOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
-import { roleIndex } from '@/services/ant-design-pro/rbac';
+import { roleIndex } from '@/pages/rbac/role/service';
 import { Access, useAccess } from '@@/plugin-access/access';
 
-const RbacUserList: React.FC<{}> = () => {
+const RbacUserList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);

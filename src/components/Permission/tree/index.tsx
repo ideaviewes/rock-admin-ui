@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { TreeSelect } from 'antd';
-import { permissionIndex } from '@/services/ant-design-pro/rbac';
+import { permissionIndex } from '@/pages/rbac/permission/service';
 
 interface PermissionInputProps {
   value?: number;
   onChange?: (value?: number) => void;
 }
 const PermissionTreeSelect: React.FC<PermissionInputProps> = ({ value, onChange }) => {
-  console.error(value);
   const [permissionId, setPermissionId] = useState<number>(0);
-  const [data, dataHandler] = useState<API.PermissionTreeItem[]>([]);
+  const [data, dataHandler] = useState<PermissionTreeItem[]>([]);
   const triggerChange = (changedValue: number) => {
     onChange?.(changedValue);
   };

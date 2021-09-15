@@ -3,12 +3,9 @@ import { Link, useHistory } from 'umi';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import IconFont from '@/components/Font/Iconfont';
-import {
-  authRolePermission,
-  permissionIndex,
-  rolePermissionIds,
-} from '@/services/ant-design-pro/rbac';
+import { authRolePermission, rolePermissionIds } from '@/pages/rbac/role/service';
 import { Button, message } from 'antd';
+import { permissionIndex } from '@/pages/rbac/permission/service';
 
 const authPermissionHandler = async (roleId: number, permissionIds: number[]) => {
   if (!permissionIds) return;
@@ -37,7 +34,7 @@ const RolePermissionIndex: React.FC = () => {
   useEffect(() => {
     getRolePermissionIds(role.id);
   }, []);
-  const columns: ProColumns<API.PermissionListItem>[] = [
+  const columns: ProColumns<PermissionListItem>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -100,7 +97,7 @@ const RolePermissionIndex: React.FC = () => {
         },
       }}
     >
-      <ProTable<API.PermissionListItem>
+      <ProTable<PermissionListItem>
         headerTitle={'分配权限'}
         actionRef={actionRef}
         rowKey={'id'}

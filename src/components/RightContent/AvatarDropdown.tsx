@@ -2,14 +2,12 @@ import React, { useCallback } from 'react';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { history, useModel } from 'umi';
-import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
+import type { MenuInfo } from 'rc-menu/lib/interface';
 
 import store from 'store';
 
 import styles from './index.less';
-
-
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -19,15 +17,12 @@ export type GlobalHeaderRightProps = {
  * 退出登录，并且将当前的 url 保存
  */
 const loginOut = async () => {
-  const { query = {}, pathname } = history.location;
+  const { query = {} } = history.location;
   const { redirect } = query;
-  store.remove("token");
+  store.remove('token');
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
       pathname: '/user/login',
-      search: stringify({
-        redirect: pathname,
-      }),
     });
   }
 };
@@ -36,21 +31,16 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
-    (event: {
-      key: React.Key;
-      keyPath: React.Key[];
-      item: React.ReactInstance;
-      domEvent: React.MouseEvent<HTMLElement>;
-    }) => {
+    async (event: MenuInfo) => {
       const { key } = event;
-      if (key === 'logout' && initialState) {
-        setInitialState({ ...initialState, currentUser: undefined });
-        loginOut();
+      if (key === 'logout') {
+        await setInitialState((s) => ({ ...s, currentUser: undefined }));
+        await loginOut();
         return;
       }
       history.push(`/account/${key}`);
     },
-    [initialState, setInitialState],
+    [setInitialState],
   );
 
   const loading = (

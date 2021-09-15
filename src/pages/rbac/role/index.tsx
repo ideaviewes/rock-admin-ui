@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import { Button, message, Modal, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { addRole, removeRole, roleIndex, updateRole } from '@/services/ant-design-pro/rbac';
+import { addRole, removeRole, roleIndex, updateRole } from './service';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { history } from 'umi';
 import { Access, useAccess } from '@@/plugin-access/access';

@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 import { request } from 'umi';
 
 /** 发送验证码 POST /api/login/captcha */
@@ -20,14 +18,14 @@ export async function getFakeCaptcha(
   });
 }
 
-export async function loginByAccount(body:API.LoginParams){
-  return request<API.LoginResult>(`/api/login/account`,{
-    method:"POST",
+export async function loginByAccount(body: LoginParams) {
+  return request<LoginResult>(`/api/login/account`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    data:{
-      ...body
-    }
+    data: {
+      ...body,
+    },
   });
 }

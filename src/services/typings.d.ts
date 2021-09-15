@@ -18,7 +18,10 @@ declare namespace API {
   type LoginResult = {
     code?: number;
     msg?: string;
-    data?: string;
+    data?: {
+      token?: string;
+      url?: string;
+    };
   };
 
   type PageParams = {
@@ -28,31 +31,6 @@ declare namespace API {
   type FakeCaptcha = {
     code?: number;
     status?: string;
-  };
-
-  type RoleListItem = {
-    id?: number;
-    name?: string;
-    code?: string;
-    remark?: string;
-  };
-  type PermissionListItem = {
-    id?: number;
-    parentId?: number;
-    name?: string;
-    icon: string;
-    url?: string;
-    priority?: number;
-    hide_in_menu?: number;
-    hide_children_in_menu?: number;
-    parent_id?: number;
-    children?: PermissionListItem[];
-  };
-  type PermissionTreeItem = {
-    value?: number;
-    title?: string;
-    label?: string;
-    children?: PermissionTreeItem[];
   };
 
   type UserAccessItem = {

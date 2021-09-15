@@ -6,10 +6,10 @@ import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import type { ResponseError } from 'umi-request';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser } from './services/api';
 
 import store from 'store';
-import { userMenu } from '@/services/ant-design-pro/rbac';
+import { userMenu } from '@/services/api';
 import { ApartmentOutlined } from '@ant-design/icons';
 
 const loginPath = '/user/login';

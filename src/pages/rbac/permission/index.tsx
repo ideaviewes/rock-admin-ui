@@ -2,12 +2,7 @@ import React, { useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import {
-  addPermission,
-  permissionIndex,
-  removePermission,
-  updatePermission,
-} from '@/services/ant-design-pro/rbac';
+import { addPermission, permissionIndex, removePermission, updatePermission } from './service';
 import { Button, Form, message, Modal, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormRadio, ProFormText } from '@ant-design/pro-form';
@@ -18,7 +13,7 @@ const PermissionList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>();
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>();
-  const [current, setCurrent] = useState<Partial<API.PermissionListItem>>({});
+  const [current, setCurrent] = useState<Partial<PermissionListItem>>({});
   const access: API.UserAccessItem = useAccess();
   const permissionDelete = (id: number | undefined) => {
     Modal.confirm({
@@ -40,7 +35,7 @@ const PermissionList: React.FC = () => {
       },
     });
   };
-  const columns: ProColumns<API.PermissionListItem>[] = [
+  const columns: ProColumns<PermissionListItem>[] = [
     {
       title: 'id',
       dataIndex: 'id',
@@ -103,7 +98,7 @@ const PermissionList: React.FC = () => {
   ];
   return (
     <PageContainer>
-      <ProTable<API.PermissionListItem>
+      <ProTable<PermissionListItem>
         headerTitle={'权限列表'}
         actionRef={actionRef}
         rowKey={'id'}
@@ -140,7 +135,7 @@ const PermissionList: React.FC = () => {
             centered: true,
           }}
           onFinish={async (value) => {
-            const response = await addPermission(value as API.PermissionListItem);
+            const response = await addPermission(value as PermissionListItem);
             const { code, msg } = response;
             if (code !== 200) {
               message.error(msg);
@@ -200,7 +195,7 @@ const PermissionList: React.FC = () => {
               id: current.id,
               ...value,
             };
-            const response = await updatePermission(payload as API.PermissionListItem);
+            const response = await updatePermission(payload as PermissionListItem);
             const { code, msg } = response;
             if (code !== 200) {
               message.error(msg);
