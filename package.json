@@ -47,6 +47,7 @@
   ],
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
+    "@ant-design/pro-card": "^1.15.5",
     "@ant-design/pro-descriptions": "^1.6.8",
     "@ant-design/pro-form": "^1.18.3",
     "@ant-design/pro-layout": "^6.15.3",
@@ -62,6 +63,7 @@
     "react-dev-inspector": "^1.1.1",
     "react-dom": "^17.0.0",
     "react-helmet-async": "^1.0.4",
+    "react-use-websocket": "^2.8.0",
     "store": "^2.0.12",
     "umi": "^3.5.0",
     "umi-request": "^1.0.8"

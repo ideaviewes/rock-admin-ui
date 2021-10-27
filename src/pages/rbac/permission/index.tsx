@@ -179,6 +179,22 @@ const PermissionList: React.FC = () => {
               },
             ]}
           />
+          <ProFormRadio.Group
+            name="hide_children_in_menu"
+            label="隐藏子菜单"
+            initialValue={2}
+            rules={[{ required: true, message: '请选择是否隐藏子菜单' }]}
+            options={[
+              {
+                label: '否',
+                value: 2,
+              },
+              {
+                label: '是',
+                value: 1,
+              },
+            ]}
+          />
           <ProFormText label={'优先级'} placeholder={'请填写权限优先级'} name={'priority'} />
         </ModalForm>
       )}
@@ -234,7 +250,7 @@ const PermissionList: React.FC = () => {
             name="hide_in_menu"
             label="导航菜单"
             initialValue={current.hide_in_menu}
-            rules={[{ required: true, message: '请选择权限类型' }]}
+            rules={[{ required: true, message: '请选择菜单是否显示' }]}
             options={[
               {
                 label: '显示',
@@ -242,6 +258,22 @@ const PermissionList: React.FC = () => {
               },
               {
                 label: '隐藏',
+                value: 1,
+              },
+            ]}
+          />
+          <ProFormRadio.Group
+            name="hide_children_in_menu"
+            label="隐藏子菜单"
+            initialValue={current.hide_children_in_menu}
+            rules={[{ required: true, message: '请选择是否隐藏子菜单' }]}
+            options={[
+              {
+                label: '否',
+                value: 2,
+              },
+              {
+                label: '是',
                 value: 1,
               },
             ]}

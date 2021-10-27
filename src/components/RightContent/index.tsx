@@ -1,8 +1,9 @@
-import {Space, Tag} from 'antd';
+import { Space, Tag } from 'antd';
 import React from 'react';
-import {useModel} from 'umi';
+import { useModel } from 'umi';
 import Avatar from './AvatarDropdown';
 import styles from './index.less';
+import WebSocketConnect from '@/components/Websocket';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -14,17 +15,15 @@ const ENVTagColor = {
 
 const GlobalHeaderRight: React.FC = () => {
   const { initialState } = useModel('@@initialState');
-
   if (!initialState || !initialState.settings) {
     return null;
   }
-
-  const { navTheme, layout } = initialState.settings;
+  const { navTheme, layout } = initialState!!.settings;
   let className = styles.right;
-
   if ((navTheme === 'dark' && layout === 'top') || layout === 'mix') {
     className = `${styles.right}  ${styles.dark}`;
   }
+
   return (
     <Space className={className}>
       <Avatar />
@@ -33,6 +32,7 @@ const GlobalHeaderRight: React.FC = () => {
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
+      <WebSocketConnect url={'ws://localhost:6300/ws'} />
     </Space>
   );
 };

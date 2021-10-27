@@ -10,12 +10,13 @@ import { currentUser as queryCurrentUser } from './services/api';
 
 import store from 'store';
 import { userMenu } from '@/services/api';
-import { ApartmentOutlined } from '@ant-design/icons';
+import { ApartmentOutlined, MessageOutlined } from '@ant-design/icons';
 
 const loginPath = '/user/login';
 
 const IconMap = {
   rbac: <ApartmentOutlined />,
+  chat: <MessageOutlined />,
 };
 
 /** 获取用户信息比较慢的时候会展示一个 loading */

@@ -42,6 +42,17 @@
     ],
   },
   {
+    access: 'ChatRoom',
+    path: '/chat',
+    routes: [
+      {
+        access: 'chatIndex',
+        path: '/chat/index',
+        component: './chat/index',
+      },
+    ],
+  },
+  {
     access: 'index',
     path: '/',
     redirect: '/rbac/user/index',
