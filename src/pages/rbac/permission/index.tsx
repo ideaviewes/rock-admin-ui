@@ -15,7 +15,7 @@ const PermissionList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>();
   const [current, setCurrent] = useState<Partial<PermissionListItem>>({});
   const access: API.UserAccessItem = useAccess();
-  const permissionDelete = (id: number | undefined) => {
+  const permissionDelete = (id: number) => {
     Modal.confirm({
       title: '删除权限',
       content: '您确定要删除该权限吗？删除后无法恢复！',
@@ -85,7 +85,7 @@ const PermissionList: React.FC = () => {
                 size={'small'}
                 danger={true}
                 onClick={async () => {
-                  permissionDelete(record.id);
+                  permissionDelete(record.id!);
                 }}
               >
                 删除

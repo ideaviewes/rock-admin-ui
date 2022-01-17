@@ -1,4 +1,4 @@
-import { request } from '@@/plugin-request/request';
+import { request } from 'umi';
 
 export async function roleIndex(
   params: {
@@ -10,7 +10,7 @@ export async function roleIndex(
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.Response<API.RoleListItem[]>>('/api/rbac/role/index', {
+  return request<API.Response<RoleListItem[]>>('/api/rbac/role/index', {
     method: 'GET',
     params: {
       ...params,
@@ -19,7 +19,7 @@ export async function roleIndex(
   });
 }
 
-export async function updateRole(payload: API.RoleListItem) {
+export async function updateRole(payload: RoleListItem) {
   return request<API.Response<void>>('/api/rbac/role/update', {
     method: 'POST',
     data: {
@@ -27,7 +27,7 @@ export async function updateRole(payload: API.RoleListItem) {
     },
   });
 }
-export async function addRole(payload: API.RoleListItem) {
+export async function addRole(payload: RoleListItem) {
   return request<API.Response<void>>('/api/rbac/role/create', {
     method: 'POST',
     data: {
@@ -35,7 +35,7 @@ export async function addRole(payload: API.RoleListItem) {
     },
   });
 }
-export async function removeRole(id: number | undefined) {
+export async function removeRole(id: number) {
   return request<API.Response<void>>('/api/rbac/role/delete', {
     method: 'POST',
     params: {

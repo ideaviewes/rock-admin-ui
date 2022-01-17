@@ -1,4 +1,4 @@
-import { request } from '@@/plugin-request/request';
+import { request } from 'umi';
 
 export async function permissionIndex(payload: API.PageParams) {
   return request<API.Response<PermissionListItem[]>>(`/api/rbac/permission/index`, {
@@ -26,7 +26,7 @@ export async function updatePermission(payload: PermissionListItem) {
   });
 }
 
-export async function removePermission(id: number | undefined) {
+export async function removePermission(id: number) {
   return request<API.Response<void>>('/api/rbac/permission/delete', {
     method: 'POST',
     params: {

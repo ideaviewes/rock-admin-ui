@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, message, Modal, Space, Switch } from 'antd';
+import { Button, message, Modal, Space, Switch, Form, Input } from 'antd';
 import type { TableListItem } from '@/pages/rbac/user/data';
 import { addUser, deleteUser, queryUser, statusUser, updateUser } from '@/pages/rbac/user/service';
 import { PlusOutlined } from '@ant-design/icons';
@@ -144,6 +144,10 @@ const RbacUserList: React.FC = () => {
       },
     },
   ];
+  const [form] = Form.useForm();
+  useEffect(() => {
+    form.setFieldsValue({ ...row });
+  }, []);
   return (
     <PageContainer>
       <ProTable
@@ -334,6 +338,11 @@ const RbacUserList: React.FC = () => {
           />
         </ModalForm>
       )}
+      <Form form={form}>
+        <Form.Item label={'aa'} name={'username'}>
+          <Input value={row.username} />
+        </Form.Item>
+      </Form>
     </PageContainer>
   );
 };

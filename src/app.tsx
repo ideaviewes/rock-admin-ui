@@ -149,6 +149,6 @@ const errorHandler = (error: ResponseError) => {
 export const request: RequestConfig = {
   errorHandler,
   headers: {
-    Authorization: store.get('token'),
+    Authorization: store.get('token') ?? '',
   },
 };

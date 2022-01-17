@@ -1,4 +1,4 @@
-export function getPermissionOpenKeys(list: API.PermissionListItem[], ids: string[]): string[] {
+export function getPermissionOpenKeys(list: PermissionListItem[], ids: string[]): string[] {
   list.forEach((item) => {
     if (item.id) {
       ids.push(item.id.toString());

@@ -12,11 +12,11 @@ import { Access, useAccess } from '@@/plugin-access/access';
 const RoleList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [current, handleCurrent] = useState<Partial<API.RoleListItem>>({});
+  const [current, handleCurrent] = useState<Partial<RoleListItem>>({});
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const access: API.UserAccessItem = useAccess();
 
-  const roleDelete = (id: number | undefined) => {
+  const roleDelete = (id: number) => {
     Modal.confirm({
       title: '删除角色',
       content: '您确定要删除该角色吗？删除后不能恢复！',
@@ -36,7 +36,7 @@ const RoleList: React.FC = () => {
       },
     });
   };
-  const columns: ProColumns<API.RoleListItem>[] = [
+  const columns: ProColumns<RoleListItem>[] = [
     {
       title: 'id',
       dataIndex: 'id',
@@ -91,7 +91,7 @@ const RoleList: React.FC = () => {
                 size={'small'}
                 danger={true}
                 onClick={async () => {
-                  roleDelete(record.id);
+                  roleDelete(record.id!);
                 }}
               >
                 删除
@@ -104,7 +104,7 @@ const RoleList: React.FC = () => {
   ];
   return (
     <PageContainer>
-      <ProTable<API.RoleListItem>
+      <ProTable<RoleListItem>
         headerTitle={'角色列表'}
         actionRef={actionRef}
         rowKey="id"
@@ -142,7 +142,7 @@ const RoleList: React.FC = () => {
             centered: true,
           }}
           onFinish={async (value) => {
-            const response = await addRole(value as API.RoleListItem);
+            const response = await addRole(value as RoleListItem);
             const { code, msg } = response;
             if (code !== 200) {
               message.error(msg);
@@ -199,7 +199,7 @@ const RoleList: React.FC = () => {
             centered: true,
           }}
           onFinish={async (value) => {
-            const payload: API.RoleListItem = {
+            const payload: RoleListItem = {
               id: current.id,
               ...value,
             };
